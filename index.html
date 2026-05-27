@@ -1,48 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tenders</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Form</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --bg: #050505;
+        --card: rgba(255,255,255,0.04);
+        --border: rgba(255,255,255,0.08);
+        --text: #ffffff;
+        --muted: rgba(255,255,255,0.45);
+        --accent: #ffffff;
+    }
+
+    body {
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(255,255,255,0.04), transparent 30%),
+            var(--bg);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 24px;
+        font-family: 'Inter', sans-serif;
+        overflow: hidden;
+    }
+
+    form {
+        width: 100%;
+        max-width: 520px;
+
+        padding: 18px;
+        border-radius: 28px;
+
+        background: var(--card);
+        border: 1px solid var(--border);
+
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+
+        box-shadow:
+            0 10px 40px rgba(0,0,0,0.45),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .field {
+        position: relative;
+    }
+
+    input {
+        all: unset;
+
+        width: 100%;
+        padding: 18px 20px;
+
+        border-radius: 18px;
+
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 500;
+
+        transition: 0.25s ease;
+    }
+
+    input::placeholder {
+        color: var(--muted);
+    }
+
+    input:focus {
+        border-color: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.06);
+
+        box-shadow:
+            0 0 0 4px rgba(255,255,255,0.04),
+            0 10px 30px rgba(255,255,255,0.04);
+    }
+
+    button {
+        all: unset;
+
+        margin-top: 4px;
+        padding: 18px;
+
+        border-radius: 18px;
+
+        background: white;
+        color: black;
+
+        text-align: center;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+
+        cursor: pointer;
+        transition: 0.25s ease;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.15);
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    @media (max-width: 600px) {
+        form {
+            padding: 14px;
+            border-radius: 22px;
+        }
+
+        input,
+        button {
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 14px;
+        }
+    }
+</style>
 </head>
+
 <body>
-    <form action="/submit" method="post">
-        <input type="text" id="category" name="category" placeholder="Category (e.g., 03100000)"><br><br>
-        <input type="email" id="email" name="email" placeholder="Email"><br><br>
-        <input type="submit" value="Submit">
-    </form>
 
-    <script>
-        document.querySelector('form').addEventListener('submit', async(event) => {
-            event.preventDefault();
+<form action="/submit" method="post">
+    <div class="field">
+        <input
+            type="text"
+            id="category"
+            name="category"
+            placeholder="Category"
+        />
+    </div>
 
-            const category = document.getElementById('category').value;
-            const email = document.getElementById('email').value;
+    <div class="field">
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+        />
+    </div>
 
-            try {
-                const res = await fetch('https://sultry-seamier-adalynn.ngrok-free.dev/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ category, email })
-                });
+    <button type="submit">Submit</button>
+</form>
 
-                if (!res.ok) {
-                    throw new Error(`Server returned status ${res.status}`);
-                }
+<script>
+    document.querySelector('form').addEventListener('submit', async(event) => {
+        event.preventDefault();
 
-                const answer = await res.text();
-                console.log('Received response:', answer);
+        const category = document.getElementById('category').value;
+        const email = document.getElementById('email').value;
 
-                if (answer == "OK") {
-                    window.location.href = "success.html";
-                }
-            } catch (err) {
-                console.error('Fetch error:', err);
-                alert('An error occurred while submitting the form.');
+        try {
+            const res = await fetch('https://sultry-seamier-adalynn.ngrok-free.dev/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ category, email })
+            });
+
+            if (!res.ok) {
+                throw new Error(`Server returned status ${res.status}`);
             }
-        });
-    </script>
+
+            const answer = await res.text();
+            console.log('Received response:', answer);
+
+            if (answer == "OK") {
+                window.location.href = "success.html";
+            }
+        } catch (err) {
+            console.error('Fetch error:', err);
+            alert('An error occurred while submitting the form.');
+        }
+    });
+</script>
+
 </body>
 </html>
